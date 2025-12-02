@@ -3,19 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site Test H_test</title>
+    <title>I Need help - La plateforme d'entraide</title>
     <link rel="stylesheet" href="style.css">
+    <!-- On ajoute la bibliothèque d'icônes Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="container">
-        <!-- On ajoute un ID à chaque bouton pour les identifier en JavaScript -->
-        <button id="btn-help-needed">I Need help</button>
-        <button id="btn-can-help">I can Help</button>
-    </div>
+    <header>
+        <h1><i class="fas fa-hands-helping"></i> I Need help</h1>
+        <p>La plateforme qui met en relation ceux qui ont besoin d'aide avec ceux qui peuvent la fournir.</p>
+    </header>
 
-    <!-- On lie notre nouveau fichier JavaScript -->
+    <main class="container">
+        <div class="action-card">
+            <i class="fas fa-hand-holding-heart fa-3x"></i>
+            <h2>J'ai besoin d'aide</h2>
+            <p>Trouvez un professionnel ou un particulier près de chez vous pour vous aider.</p>
+            <a href="need_help.html" class="main-button" id="btn-help-needed">Commencer ma recherche</a>
+        </div>
+
+        <div class="action-card">
+            <i class="fas fa-user-check fa-3x"></i>
+            <h2>Je peux aider</h2>
+            <p>Proposez vos services et votre temps pour aider les membres de la communauté.</p>
+            <a href="can_help.html" class="main-button" id="btn-can-help">Proposer mon aide</a>
+        </div>
+    </main>
+
+    <section id="about">
+        <h2>À Propos de "I Need help"</h2>
+        <p>
+            "I Need help" est né d'une idée simple : créer un pont entre les besoins et les solutions.
+            Notre mission est de faciliter l'entraide locale en mettant en relation des personnes
+            recherchant une aide spécifique avec des compétences et une bonne volonté.
+        </p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 I Need help. Tous droits réservés.</p>
+        <p>
+            <a href="#">Contact</a> | 
+            <a href="#">Mentions Légales</a>
+        </p>
+    </footer>
+
     <script src="script.js"></script>
-
 </body>
 </html>

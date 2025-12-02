@@ -8,18 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- LOGIQUE POUR LA PAGE D'ACCUEIL (index.html) ---
-    const btnHelpNeeded = document.getElementById('btn-help-needed');
-    const btnCanHelp = document.getElementById('btn-can-help');
-    if (btnHelpNeeded && btnCanHelp) {
-        btnHelpNeeded.addEventListener('click', () => {
-            window.location.href = 'need_help.html';
-            addClickEffect(btnHelpNeeded);
-        });
-        btnCanHelp.addEventListener('click', () => {
-            window.location.href = 'can_help.html';
-            addClickEffect(btnCanHelp);
-        });
+   // --- LOGIQUE POUR LA PAGE D'ACCUEIL (index.html) ---
+const btnHelpNeeded = document.getElementById('btn-help-needed');
+const btnCanHelp = document.getElementById('btn-can-help');
+
+if (btnHelpNeeded && btnCanHelp) {
+    function addClickEffect(button) {
+        if (button) {
+            button.classList.add('button-clicked');
+            setTimeout(() => button.classList.remove('button-clicked'), 150);
+        }
+    }
+
+    // On ajoute l'effet de clic sur les nouveaux liens
+    btnHelpNeeded.addEventListener('click', (e) => {
+        addClickEffect(btnHelpNeeded);
+    });
+
+    btnCanHelp.addEventListener('click', (e) => {
+        addClickEffect(btnCanHelp);
+    });
+}
     }
 
     // --- LOGIQUE POUR LES BOUTONS DE RETOUR ---
