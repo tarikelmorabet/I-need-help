@@ -158,3 +158,37 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 });
+// --- LOGIQUE POUR LA PAGE TABLEAU DE BORD (dashboard.html) ---
+const welcomeMessage = document.getElementById('welcome-message');
+const logoutButton = document.getElementById('logout-button');
+
+// On vérifie si les éléments existent bien sur la page
+if (welcomeMessage && logoutButton) {
+    
+    // Vérifier si un utilisateur est connecté
+    const loggedInUserEmail = localStorage.getItem('loggedInUser');
+    
+    if (loggedInUserEmail) {
+        // Récupérer les données de l'utilisateur
+        const userData = JSON.parse(localStorage.getItem(loggedInUserEmail));
+        
+        if (userData && userData.username) {
+            // Afficher le message de bienvenue personnalisé
+            welcomeMessage.textContent = `Bonjour, ${userData.username} !`;
+        } else {
+            welcomeMessage.textContent = "Bonjour !";
+        }
+    } else {
+        // Si personne n'est connecté, rediriger vers la page de connexion
+        window.location.href = 'login.html';
+    }
+
+    // Gérer le clic sur le bouton de déconnexion
+    logoutButton.addEventListener('click', () => {
+        // Supprimer la session de l'utilisateur
+        localStorage.removeItem('loggedInUser');
+        
+        // Rediriger vers la page d'accueil
+        window.location.href = 'index.html';
+    });
+}
