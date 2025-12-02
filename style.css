@@ -115,3 +115,25 @@ button:hover {
 #back-button:hover {
     background-color: #5a6268;
 }
+/* Style pour les formulaires */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box; /* Important pour que le padding n'affecte pas la largeur */
+}
+
+form {
+    width: 100%;
+}
+
+#register-message,
+#login-message {
+    margin-top: 15px;
+    color: #d9534f; /* Rouge pour les erreurs */
+    font-weight: bold;
+}
