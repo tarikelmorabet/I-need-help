@@ -35,3 +35,50 @@ button:hover {
     transform: scale(0.95);
     opacity: 0.7;
 }
+/* ... (gardez votre ancien code CSS ici) ... */
+
+/* Style pour la page "I need help" */
+.container-help {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.container-help h1 {
+    color: #007bff;
+    margin-bottom: 25px;
+}
+
+.container-help label {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.container-help select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #f9f9f9;
+}
+/* ... (gardez votre ancien code CSS ici) ... */
+
+/* Style pour le deuxième menu et le résultat */
+#option-select {
+    margin-top: 20px; /* Espace au-dessus du menu */
+}
+
+#selection-result {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #0056b3; /* Un bleu un peu plus foncé */
+    min-height: 20px; /* Pour éviter que la page ne "saute" */
+}

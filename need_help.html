@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I need help</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container-help">
+        <h1>What do you need?</h1>
+        
+        <label for="function-select">Choose a function:</label>
+        <select id="function-select">
+            <option value="">--Please choose an option--</option>
+            <option value="agent_immobilier">Agent immobilier</option>
+            <option value="architecte">Architecte</option>
+            <option value="assistant_maternel">Assistant maternel</option>
+            <option value="avocat">Avocat</option>
+            <option value="carreleur">Carreleur</option>
+            <option value="charpentier">Charpentier</option>
+            <option value="chauffagiste">Chauffagiste</option>
+            <option value="coiffeur">Coiffeur</option>
+            <option value="comptable">Comptable</option>
+            <option value="cuistot">Cuistot</option>
+            <option value="dentiste">Dentiste</option>
+            <option value="dermatologue">Dermatologue</option>
+            <option value="developpeur">Développeur</option>
+            <option value="docteur">Docteur</option>
+            <option value="electricien">Électricien</option>
+            <option value="estheticienne">Esthéticienne</option>
+            <option value="garagiste">Garagiste / Mécanicien</option>
+            <option value="graphiste">Graphiste</option>
+            <option value="infirmier">Infirmier / Infirmière</option>
+            <option value="jardinier">Jardinier</option>
+            <option value="macon">Maçon</option>
+            <option value="menuisier">Menuisier</option>
+            <option value="opticien">Opticien</option>
+            <option value="peintre">Peintre en bâtiment</option>
+            <option value="pharmacien">Pharmacien</option>
+            <option value="plombier">Plombier</option>
+            <option value="psychologue">Psychologue</option>
+            <option value="serrurier">Serrurier</option>
+            <option value="veterinaire">Vétérinaire</option>
+            <option value="webdesigner">Web Designer</option>
+        </select>
+
+        <label for="option-select">Choose an option:</label>
+        <select id="option-select" disabled>
+            <option value="">--Select a function first--</option>
+        </select>
+
+        <p id="selection-result"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
