@@ -267,4 +267,18 @@ footer a:hover {
         padding: 20px;
         margin: 20px auto;
     }
+
+}
+/* --- Style pour la page de recherche --- */
+
+#search-results {
+    width: 100%;
+    margin-top: 20px;
+    text-align: left;
+}
+
+#search-results h3 {
+    color: #5a67d8;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
 }
