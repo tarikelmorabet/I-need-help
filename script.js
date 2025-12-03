@@ -118,16 +118,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 functionSelect.addEventListener('change', () => {
                     const selectedFunction = functionSelect.value;
                     
-                    // On vide le menu des options précédentes
                     optionSelect.innerHTML = '<option value="">--Choose an option--</option>';
                     selectionResult.textContent = '';
 
                     if (selectedFunction && allOptions[selectedFunction]) {
-                        optionSelect.disabled = false; // On active le deuxième menu
+                        optionSelect.disabled = false; 
                         
                         const options = allOptions[selectedFunction];
                         
-                        // On remplit le deuxième menu avec les nouvelles options
                         options.forEach(optionText => {
                             const option = document.createElement('option');
                             option.value = optionText.toLowerCase().replace(/\s+/g, '-');
@@ -135,11 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             optionSelect.appendChild(option);
                         });
                     } else {
-                        optionSelect.disabled = true; // On désactive si pas de choix
+                        optionSelect.disabled = true; 
                     }
                 });
 
-                // Écouteur pour afficher le choix final
                 optionSelect.addEventListener('change', () => {
                     if (optionSelect.value) {
                         const selectedOptionText = optionSelect.options[optionSelect.selectedIndex].text;
@@ -151,20 +148,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             })
             .catch(error => {
-                console.error('Un problème est survenu :', error);
-                // On peut afficher un message à l'utilisateur si le JSON ne se charge pas
+                console.error('Un problème est survenu avec data.json :', error);
                 functionSelect.innerHTML = '<option value="">Erreur de chargement des options</option>';
             });
     }
 
-    // --- DÉBUT DE LA LOGIQUE POUR LA PAGE TABLEAU DE BORD (dashboard.html) ---
+    // --- LOGIQUE POUR LA PAGE TABLEAU DE BORD (dashboard.html) ---
     const welcomeMessage = document.getElementById('welcome-message');
     const logoutButton = document.getElementById('logout-button');
     const offerForm = document.getElementById('offer-form');
     const offerMessage = document.getElementById('offer-message');
 
-    // On vérifie si les éléments de base existent. Si non, on n'exécute pas le code.
+    console.log("Début du script du tableau de bord...");
+
     if (welcomeMessage && logoutButton && offerForm) {
+        console.log("Éléments du tableau de bord trouvés avec succès.");
         
         const loggedInUserEmail = localStorage.getItem('loggedInUser');
         
@@ -181,23 +179,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const citySelect = document.getElementById('offer-city');
             const districtSelect = document.getElementById('offer-district');
 
-            // --- FONCTION POUR CHARGER LES DONNÉES ET PEUPLER LES MENUS ---
-            const populateForm = async () => {
-                try {
-                    console.log("Chargement de data.json...");
-                    const functionsResponse = await fetch('data.json');
-                    if (!functionsResponse.ok) throw new Error(`Erreur HTTP! statut: ${functionsResponse.status}`);
-                    const functionsData = await functionsResponse.json();
-                    console.log("data.json chargé avec succès.", functionsData);
-
-                    console.log("Chargement de cities.json...");
-                    const citiesResponse = await fetch('cities.json');
-                    if (!citiesResponse.ok) throw new Error(`Erreur HTTP! statut: ${citiesResponse.status}`);
-                    const citiesData = await citiesResponse.json();
-                    console.log("cities.json chargé avec succès.", citiesData);
-
+            // --- CHARGEMENT DES DONNÉES (Version séquentielle et simple) ---
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP! statut: ${response.status} pour data.json`);
+                    }
+                    return response.json();
+                })
+                .then(functionsData => {
+                    console.log("data.json chargé avec succès.");
                     const allOptions = functionsData.options;
-                    const allCities = citiesData.cities;
 
                     // Peupler le menu des fonctions
                     Object.keys(allOptions).forEach(func => {
@@ -207,15 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         functionSelect.appendChild(option);
                     });
 
-                    // Peupler le menu des villes
-                    Object.keys(allCities).forEach(city => {
-                        const option = document.createElement('option');
-                        option.value = city;
-                        option.textContent = city;
-                        citySelect.appendChild(option);
-                    });
-                    
-                    // --- LOGIQUE DES MENUS LIÉS ---
+                    // LOGIQUE DU MENU FONCTION -> OPTION
                     functionSelect.addEventListener('change', () => {
                         const selectedFunction = functionSelect.value;
                         optionSelect.innerHTML = '<option value="">--Choisir une option--</option>';
@@ -232,6 +216,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
 
+                    // --- CHARGER LES VILLES ---
+                    return fetch('cities.json');
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP! statut: ${response.status} pour cities.json`);
+                    }
+                    return response.json();
+                })
+                .then(citiesData => {
+                    console.log("cities.json chargé avec succès.");
+                    const allCities = citiesData.cities;
+
+                    // Peupler le menu des villes
+                    Object.keys(allCities).forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        citySelect.appendChild(option);
+                    });
+
+                    // LOGIQUE DU MENU VILLE -> QUARTIER
                     citySelect.addEventListener('change', () => {
                         const selectedCity = citySelect.value;
                         districtSelect.innerHTML = '<option value="">--Choisir un quartier--</option>';
@@ -247,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             districtSelect.disabled = true;
                         }
                     });
-
+                    
                     // --- CHARGER LES DONNÉES SAUVEGARDÉES ---
                     const offerData = JSON.parse(localStorage.getItem(`offer_${loggedInUserEmail}`));
                     if (offerData) {
@@ -262,15 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         districtSelect.value = offerData.district || '';
                     }
 
-                } catch (error) {
+                })
+                .catch(error => {
                     console.error("Une erreur est survenue lors du chargement des données du formulaire:", error);
-                    offerMessage.textContent = "Erreur de chargement des données. Veuillez réessayer plus tard.";
+                    offerMessage.textContent = "Erreur de chargement des données. Vérifiez la console.";
                     offerMessage.style.color = "red";
-                }
-            };
-
-            // Lancer la fonction
-            populateForm();
+                });
 
             // --- SOUMISSION DU FORMULAIRE ---
             offerForm.addEventListener('submit', (e) => {
@@ -303,6 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('loggedInUser');
             window.location.href = 'index.html';
         });
-    }
 
+    } else {
+        console.error("ERREUR : Les éléments du tableau de bord n'ont pas été trouvés. Vérifiez le HTML de dashboard.html");
+    }
 });
