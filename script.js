@@ -99,78 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // --- LOGIQUE POUR LA PAGE DE RECHERCHE (need_help.html) ---
-    const searchForm = document.getElementById('search-form');
-    const searchResults = document.getElementById('search-results');
-    if (searchForm && searchResults) {
-        const searchFunctionSelect = document.getElementById('search-function');
-        const searchCitySelect = document.getElementById('search-city');
-
-        Promise.all([
-            fetch('data.json').then(res => res.json()),
-            fetch('cities.json').then(res => res.json())
-        ]).then(([functionsData, citiesData]) => {
-            Object.keys(functionsData.options).forEach(func => {
-                const option = document.createElement('option');
-                option.value = func;
-                option.textContent = func.charAt(0).toUpperCase() + func.slice(1);
-                searchFunctionSelect.appendChild(option);
-            });
-            Object.keys(citiesData.cities).forEach(city => {
-                const option = document.createElement('option');
-                option.value = city;
-                option.textContent = city;
-                searchCitySelect.appendChild(option);
-            });
-        }).catch(error => console.error('Erreur de chargement des données:', error));
-
-        searchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const selectedFunction = searchFunctionSelect.value;
-            const selectedCity = searchCitySelect.value;
-
-            const allOffers = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('profile_')) { // On cherche les profils, pas les vieilles offres
-                    const offerData = JSON.parse(localStorage.getItem(key));
-                    const userData = JSON.parse(localStorage.getItem(offerData.userEmail));
-                    if (userData) {
-                        offerData.username = userData.username;
-                        allOffers.push(offerData);
-                    }
-                }
-            }
-
-            const filteredOffers = allOffers.filter(offer => {
-                const functionMatch = !selectedFunction || offer.function === selectedFunction;
-                const cityMatch = !selectedCity || offer.city === selectedCity;
-                return functionMatch && cityMatch;
-            });
-
-            searchResults.innerHTML = '';
-            if (filteredOffers.length > 0) {
-                filteredOffers.forEach(offer => {
-                    const offerCard = document.createElement('div');
-                    offerCard.classList.add('offer-card');
-                    offerCard.innerHTML = `
-                        <h3>${offer.function} - ${offer.option}</h3>
-                        <p><strong>Description :</strong> ${offer.description}</p>
-                        <p><strong>Disponibilités :</strong> ${offer.schedule}</p>
-                        <p><strong>Prix moyen :</strong> <span class="price">${offer.price} Dh</span></p>
-                        <p><strong>Localisation :</strong> ${offer.city}, ${offer.district}</p>
-                        <div class="contact-info">
-                            <strong>Proposé par :</strong> ${offer.username}
-                        </div>
-                    `;
-                    searchResults.appendChild(offerCard);
-                });
-            } else {
-                searchResults.innerHTML = '<p>Aucune offre trouvée pour ces critères.</p>';
-            }
-        });
-    }
-
     // --- LOGIQUE POUR LA PAGE TABLEAU DE BORD (dashboard.html) ---
     const welcomeMessage = document.getElementById('welcome-message');
     const logoutButton = document.getElementById('logout-button');
@@ -184,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const userData = JSON.parse(localStorage.getItem(loggedInUserEmail));
             welcomeMessage.textContent = `Bonjour, ${userData.username} !`;
 
+            // RÉFÉRENCES AUX ÉLÉMENTS DU FORMULAIRE
             const profilePictureInput = document.getElementById('profile-picture');
             const experienceInput = document.getElementById('experience');
             const diplomasInput = document.getElementById('diplomas');
@@ -195,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const citySelect = document.getElementById('offer-city');
             const districtSelect = document.getElementById('offer-district');
 
+            // FONCTION POUR CHARGER LES DONNÉES ET PEUPLER LES MENUS
             const populateForm = async () => {
                 try {
                     const [functionsResponse, citiesResponse] = await Promise.all([
@@ -207,12 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const allOptions = functionsData.options;
                     const allCities = citiesData.cities;
 
+                    // Peupler le menu des fonctions
                     Object.keys(allOptions).forEach(func => {
                         const option = document.createElement('option');
                         option.value = func;
                         option.textContent = func.charAt(0).toUpperCase() + func.slice(1);
                         functionSelect.appendChild(option);
                     });
+                    // Peupler le menu des villes
                     Object.keys(allCities).forEach(city => {
                         const option = document.createElement('option');
                         option.value = city;
@@ -220,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         citySelect.appendChild(option);
                     });
                     
+                    // LOGIQUE DES MENUS LIÉS
                     functionSelect.addEventListener('change', () => {
                         const selectedFunction = functionSelect.value;
                         optionSelect.innerHTML = '<option value="">--Choisir une option--</option>';
@@ -235,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             optionSelect.disabled = true;
                         }
                     });
+
                     citySelect.addEventListener('change', () => {
                         const selectedCity = citySelect.value;
                         districtSelect.innerHTML = '<option value="">--Choisir un quartier--</option>';
@@ -251,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
 
+                    // CHARGER LES DONNÉES SAUVEGARDÉES DU PROFIL
                     const profileData = JSON.parse(localStorage.getItem(`profile_${loggedInUserEmail}`));
                     if (profileData) {
                         profilePictureInput.value = profileData.profilePicture || '';
@@ -276,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             populateForm();
 
+            // SOUMISSION DU FORMULAIRE
             profileForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
@@ -304,9 +240,132 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         }
 
+        // GESTION DE LA DÉCONNEXION
         logoutButton.addEventListener('click', () => {
             localStorage.removeItem('loggedInUser');
             window.location.href = 'index.html';
         });
+    }
+
+    // --- LOGIQUE POUR LA PAGE DE RECHERCHE (need_help.html) ---
+    const searchForm = document.getElementById('search-form');
+    const searchResults = document.getElementById('search-results');
+    const optionFilter = document.getElementById('option-filter');
+
+    if (searchForm && searchResults) {
+        const searchFunctionSelect = document.getElementById('search-function');
+        const searchCitySelect = document.getElementById('search-city');
+        const searchDistrictSelect = document.getElementById('search-district');
+
+        let allProfiles = [];
+
+        // Charger les fonctions, les villes et les profils
+        Promise.all([
+            fetch('data.json').then(res => res.json()),
+            fetch('cities.json').then(res => res.json())
+        ]).then(([functionsData, citiesData]) => {
+            // Peupler les menus de recherche
+            Object.keys(functionsData.options).forEach(func => {
+                const option = document.createElement('option');
+                option.value = func;
+                option.textContent = func.charAt(0).toUpperCase() + func.slice(1);
+                searchFunctionSelect.appendChild(option);
+            });
+            Object.keys(citiesData.cities).forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                searchCitySelect.appendChild(option);
+            });
+
+            // LOGIQUE POUR LE MENU VILLE -> QUARTIER
+            searchCitySelect.addEventListener('change', () => {
+                const selectedCity = searchCitySelect.value;
+                searchDistrictSelect.innerHTML = '<option value="">Tous les quartiers</option>';
+                if (selectedCity && citiesData.cities[selectedCity]) {
+                    searchDistrictSelect.disabled = false;
+                    citiesData.cities[selectedCity].forEach(districtText => {
+                        const option = document.createElement('option');
+                        option.value = districtText;
+                        option.textContent = districtText;
+                        searchDistrictSelect.appendChild(option);
+                    });
+                } else {
+                    searchDistrictSelect.disabled = true;
+                }
+            });
+
+            // Récupérer tous les profils
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('profile_')) {
+                    const profileData = JSON.parse(localStorage.getItem(key));
+                    const userData = JSON.parse(localStorage.getItem(profileData.userEmail));
+                    if (userData) {
+                        profileData.username = userData.username;
+                        allProfiles.push(profileData);
+                    }
+                }
+            }
+            
+            // Première affichage
+            displayAndFilterResults();
+
+        }).catch(error => console.error('Erreur de chargement des données:', error));
+        
+        // Fonction pour afficher et filtrer les résultats
+        function displayAndFilterResults() {
+            const selectedFunction = searchFunctionSelect.value;
+            const selectedCity = searchCitySelect.value;
+            const selectedDistrict = searchDistrictSelect.value;
+            const selectedOption = optionFilter ? optionFilter.value : '';
+
+            // Filtrer les profils
+            const filteredProfiles = allProfiles.filter(profile => {
+                const functionMatch = !selectedFunction || profile.function === selectedFunction;
+                const cityMatch = !selectedCity || profile.city === selectedCity;
+                const districtMatch = !selectedDistrict || profile.district === selectedDistrict || selectedDistrict === '';
+                const optionMatch = !selectedOption || profile.option === selectedOption;
+                return functionMatch && cityMatch && districtMatch && optionMatch;
+            });
+
+            // Afficher les résultats
+            searchResults.innerHTML = '';
+            if (filteredProfiles.length > 0) {
+                filteredProfiles.forEach(profile => {
+                    const offerCard = document.createElement('div');
+                    offerCard.classList.add('offer-card');
+                    offerCard.innerHTML = `
+                        <div class="offer-header">
+                            <img src="${profile.profilePicture || 'https://via.placeholder.com/50'}" alt="Photo de profil" class="profile-pic">
+                            <div class="offer-title">
+                                <h3>${profile.function} - ${profile.option}</h3>
+                                <p class="provider-name">${profile.username}</p>
+                            </div>
+                        </div>
+                        <div class="offer-body">
+                            <p><strong>Description :</strong> ${profile.description}</p>
+                            <p><strong>Disponibilités :</strong> ${profile.schedule}</p>
+                            <p><strong>Prix moyen :</strong> <span class="price">${profile.price} Dh</span></p>
+                            <p><strong>Localisation :</strong> ${profile.city}, ${profile.district}</p>
+                        </div>
+                    `;
+                    searchResults.appendChild(offerCard);
+                });
+            } else {
+                searchResults.innerHTML = '<p>Aucune offre trouvée pour ces critères.</p>';
+            }
+        }
+
+        // Gérer la soumission du formulaire de recherche
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            displayAndFilterResults();
+        });
+
+        // Gérer le changement du filtre d'option
+        if (optionFilter) {
+            optionFilter.addEventListener('change', displayAndFilterResults);
+        }
     }
 });
