@@ -7,23 +7,29 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => button.classList.remove('button-clicked'), 150);
         }
     }
-
     // --- LOGIQUE POUR LA PAGE D'ACCUEIL (index.html) ---
-    const btnHelpNeeded = document.getElementById('btn-help-needed');
-    const btnCanHelp = document.getElementById('btn-can-help');
-    if (btnHelpNeeded && btnCanHelp) {
-        btnHelpNeeded.addEventListener('click', (e) => {
-            e.preventDefault();
-            addClickEffect(btnHelpNeeded);
-            setTimeout(() => { window.location.href = 'need_help.html'; }, 150);
-        });
-
-        btnCanHelp.addEventListener('click', (e) => {
-            e.preventDefault();
-            addClickEffect(btnCanHelp);
-            setTimeout(() => { window.location.href = 'can_help.html'; }, 150);
-        });
+const btnHelpNeeded = document.getElementById('btn-help-needed');
+const btnCanHelp = document.getElementById('btn-can-help');
+if (btnHelpNeeded && btnCanHelp) {
+    function addClickEffect(button) {
+        if (button) {
+            button.classList.add('button-clicked');
+            setTimeout(() => button.classList.remove('button-clicked'), 150);
+        }
     }
+
+    btnHelpNeeded.addEventListener('click', (e) => {
+        e.preventDefault();
+        addClickEffect(btnHelpNeeded);
+        setTimeout(() => { window.location.href = 'need_help.html'; }, 150);
+    });
+
+    btnCanHelp.addEventListener('click', (e) => {
+        e.preventDefault();
+        addClickEffect(btnCanHelp);
+        setTimeout(() => { window.location.href = 'can_help.html'; }, 150);
+    });
+}
 
     // --- LOGIQUE POUR LES BOUTONS DE RETOUR ---
     const backButton = document.getElementById('back-button');
@@ -380,4 +386,5 @@ if (searchForm && searchResults) {
         }
     });
 }
+
 
