@@ -154,164 +154,153 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LOGIQUE POUR LA PAGE TABLEAU DE BORD (dashboard.html) ---
-    const welcomeMessage = document.getElementById('welcome-message');
-    const logoutButton = document.getElementById('logout-button');
-    const offerForm = document.getElementById('offer-form');
-    const offerMessage = document.getElementById('offer-message');
+    // --- LOGIQUE POUR LA PAGE TABLEAU DE BORD (dashboard.html) ---
+const welcomeMessage = document.getElementById('welcome-message');
+const logoutButton = document.getElementById('logout-button');
+const profileForm = document.getElementById('profile-form');
+const profileMessage = document.getElementById('profile-message');
 
-    console.log("Début du script du tableau de bord...");
+if (welcomeMessage && logoutButton && profileForm) {
+    
+    const loggedInUserEmail = localStorage.getItem('loggedInUser');
+    
+    if (loggedInUserEmail) {
+        const userData = JSON.parse(localStorage.getItem(loggedInUserEmail));
+        welcomeMessage.textContent = `Bonjour, ${userData.username} !`;
 
-    if (welcomeMessage && logoutButton && offerForm) {
-        console.log("Éléments du tableau de bord trouvés avec succès.");
-        
-        const loggedInUserEmail = localStorage.getItem('loggedInUser');
-        
-        if (loggedInUserEmail) {
-            const userData = JSON.parse(localStorage.getItem(loggedInUserEmail));
-            welcomeMessage.textContent = `Bonjour, ${userData.username} !`;
+        // --- RÉFÉRENCES AUX ÉLÉMENTS DU FORMULAIRE ---
+        const profilePictureInput = document.getElementById('profile-picture');
+        const experienceInput = document.getElementById('experience');
+        const diplomasInput = document.getElementById('diplomas');
+        const functionSelect = document.getElementById('offer-function');
+        const optionSelect = document.getElementById('offer-option');
+        const descriptionInput = document.getElementById('offer-description');
+        const scheduleSelect = document.getElementById('offer-schedule');
+        const priceInput = document.getElementById('offer-price');
+        const citySelect = document.getElementById('offer-city');
+        const districtSelect = document.getElementById('offer-district');
 
-            // --- RÉFÉRENCES AUX ÉLÉMENTS DU FORMULAIRE ---
-            const functionSelect = document.getElementById('offer-function');
-            const optionSelect = document.getElementById('offer-option');
-            const descriptionInput = document.getElementById('offer-description');
-            const scheduleSelect = document.getElementById('offer-schedule');
-            const priceInput = document.getElementById('offer-price');
-            const citySelect = document.getElementById('offer-city');
-            const districtSelect = document.getElementById('offer-district');
+        // --- FONCTION POUR CHARGER LES DONNÉES ET PEUPLER LES MENUS ---
+        const populateForm = async () => {
+            try {
+                const [functionsResponse, citiesResponse] = await Promise.all([
+                    fetch('data.json'),
+                    fetch('cities.json')
+                ]);
+                const functionsData = await functionsResponse.json();
+                const citiesData = await citiesResponse.json();
 
-            // --- CHARGEMENT DES DONNÉES (Version séquentielle et simple) ---
-            fetch('data.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Erreur HTTP! statut: ${response.status} pour data.json`);
+                const allOptions = functionsData.options;
+                const allCities = citiesData.cities;
+
+                // Peupler les menus (fonctions et villes)
+                Object.keys(allOptions).forEach(func => {
+                    const option = document.createElement('option');
+                    option.value = func;
+                    option.textContent = func.charAt(0).toUpperCase() + func.slice(1);
+                    functionSelect.appendChild(option);
+                });
+                Object.keys(allCities).forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+                
+                // LOGIQUE DES MENUS LIÉS (identique à avant)
+                functionSelect.addEventListener('change', () => {
+                    const selectedFunction = functionSelect.value;
+                    optionSelect.innerHTML = '<option value="">--Choisir une option--</option>';
+                    if (selectedFunction && allOptions[selectedFunction]) {
+                        optionSelect.disabled = false;
+                        allOptions[selectedFunction].forEach(optText => {
+                            const option = document.createElement('option');
+                            option.value = optText;
+                            option.textContent = optText;
+                            optionSelect.appendChild(option);
+                        });
+                    } else {
+                        optionSelect.disabled = true;
                     }
-                    return response.json();
-                })
-                .then(functionsData => {
-                    console.log("data.json chargé avec succès.");
-                    const allOptions = functionsData.options;
-
-                    // Peupler le menu des fonctions
-                    Object.keys(allOptions).forEach(func => {
-                        const option = document.createElement('option');
-                        option.value = func;
-                        option.textContent = func.charAt(0).toUpperCase() + func.slice(1);
-                        functionSelect.appendChild(option);
-                    });
-
-                    // LOGIQUE DU MENU FONCTION -> OPTION
-                    functionSelect.addEventListener('change', () => {
-                        const selectedFunction = functionSelect.value;
-                        optionSelect.innerHTML = '<option value="">--Choisir une option--</option>';
-                        if (selectedFunction && allOptions[selectedFunction]) {
-                            optionSelect.disabled = false;
-                            allOptions[selectedFunction].forEach(optText => {
-                                const option = document.createElement('option');
-                                option.value = optText;
-                                option.textContent = optText;
-                                optionSelect.appendChild(option);
-                            });
-                        } else {
-                            optionSelect.disabled = true;
-                        }
-                    });
-
-                    // --- CHARGER LES VILLES ---
-                    return fetch('cities.json');
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Erreur HTTP! statut: ${response.status} pour cities.json`);
+                });
+                citySelect.addEventListener('change', () => {
+                    const selectedCity = citySelect.value;
+                    districtSelect.innerHTML = '<option value="">--Choisir un quartier--</option>';
+                    if (selectedCity && allCities[selectedCity]) {
+                        districtSelect.disabled = false;
+                        allCities[selectedCity].forEach(districtText => {
+                            const option = document.createElement('option');
+                            option.value = districtText;
+                            option.textContent = districtText;
+                            districtSelect.appendChild(option);
+                        });
+                    } else {
+                        districtSelect.disabled = true;
                     }
-                    return response.json();
-                })
-                .then(citiesData => {
-                    console.log("cities.json chargé avec succès.");
-                    const allCities = citiesData.cities;
-
-                    // Peupler le menu des villes
-                    Object.keys(allCities).forEach(city => {
-                        const option = document.createElement('option');
-                        option.value = city;
-                        option.textContent = city;
-                        citySelect.appendChild(option);
-                    });
-
-                    // LOGIQUE DU MENU VILLE -> QUARTIER
-                    citySelect.addEventListener('change', () => {
-                        const selectedCity = citySelect.value;
-                        districtSelect.innerHTML = '<option value="">--Choisir un quartier--</option>';
-                        if (selectedCity && allCities[selectedCity]) {
-                            districtSelect.disabled = false;
-                            allCities[selectedCity].forEach(districtText => {
-                                const option = document.createElement('option');
-                                option.value = districtText;
-                                option.textContent = districtText;
-                                districtSelect.appendChild(option);
-                            });
-                        } else {
-                            districtSelect.disabled = true;
-                        }
-                    });
-                    
-                    // --- CHARGER LES DONNÉES SAUVEGARDÉES ---
-                    const offerData = JSON.parse(localStorage.getItem(`offer_${loggedInUserEmail}`));
-                    if (offerData) {
-                        functionSelect.value = offerData.function || '';
-                        functionSelect.dispatchEvent(new Event('change'));
-                        optionSelect.value = offerData.option || '';
-                        descriptionInput.value = offerData.description || '';
-                        scheduleSelect.value = offerData.schedule || '';
-                        priceInput.value = offerData.price || '';
-                        citySelect.value = offerData.city || '';
-                        citySelect.dispatchEvent(new Event('change'));
-                        districtSelect.value = offerData.district || '';
-                    }
-
-                })
-                .catch(error => {
-                    console.error("Une erreur est survenue lors du chargement des données du formulaire:", error);
-                    offerMessage.textContent = "Erreur de chargement des données. Vérifiez la console.";
-                    offerMessage.style.color = "red";
                 });
 
-            // --- SOUMISSION DU FORMULAIRE ---
-            offerForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const newOfferData = {
-                    function: functionSelect.value,
-                    option: optionSelect.value,
-                    description: descriptionInput.value,
-                    schedule: scheduleSelect.value,
-                    price: priceInput.value,
-                    city: citySelect.value,
-                    district: districtSelect.value,
-                    userEmail: loggedInUserEmail
-                };
+                // --- CHARGER LES DONNÉES SAUVEGARDÉES DU PROFIL ---
+                const profileData = JSON.parse(localStorage.getItem(`profile_${loggedInUserEmail}`));
+                if (profileData) {
+                    profilePictureInput.value = profileData.profilePicture || '';
+                    experienceInput.value = profileData.experience || '';
+                    diplomasInput.value = profileData.diplomas || '';
+                    functionSelect.value = profileData.function || '';
+                    functionSelect.dispatchEvent(new Event('change'));
+                    optionSelect.value = profileData.option || '';
+                    descriptionInput.value = profileData.description || '';
+                    scheduleSelect.value = profileData.schedule || '';
+                    priceInput.value = profileData.price || '';
+                    citySelect.value = profileData.city || '';
+                    citySelect.dispatchEvent(new Event('change'));
+                    districtSelect.value = profileData.district || '';
+                }
 
-                localStorage.setItem(`offer_${loggedInUserEmail}`, JSON.stringify(newOfferData));
-                
-                offerMessage.textContent = "Votre offre a été sauvegardée avec succès !";
-                offerMessage.style.color = "green";
-                setTimeout(() => { offerMessage.textContent = ''; }, 3000);
-            });
+            } catch (error) {
+                console.error("Une erreur est survenue lors du chargement des données du formulaire:", error);
+                profileMessage.textContent = "Erreur de chargement des données. Veuillez réessayer plus tard.";
+                profileMessage.style.color = "red";
+            }
+        };
 
-        } else {
-            window.location.href = 'login.html';
-        }
+        // Lancer la fonction
+        populateForm();
 
-        // --- GESTION DE LA DÉCONNEXION ---
-        logoutButton.addEventListener('click', () => {
-            localStorage.removeItem('loggedInUser');
-            window.location.href = 'index.html';
+        // --- SOUMISSION DU FORMULAIRE ---
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newProfileData = {
+                profilePicture: profilePictureInput.value,
+                experience: experienceInput.value,
+                diplomas: diplomasInput.value,
+                function: functionSelect.value,
+                option: optionSelect.value,
+                description: descriptionInput.value,
+                schedule: scheduleSelect.value,
+                price: priceInput.value,
+                city: citySelect.value,
+                district: districtSelect.value,
+                userEmail: loggedInUserEmail
+            };
+
+            localStorage.setItem(`profile_${loggedInUserEmail}`, JSON.stringify(newProfileData));
+            
+            profileMessage.textContent = "Votre profil a été mis à jour avec succès !";
+            profileMessage.style.color = "green";
+            setTimeout(() => { profileMessage.textContent = ''; }, 3000);
         });
 
     } else {
-        console.error("ERREUR : Les éléments du tableau de bord n'ont pas été trouvés. Vérifiez le HTML de dashboard.html");
+        window.location.href = 'login.html';
     }
 
-});
+    // --- GESTION DE LA DÉCONNEXION ---
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('loggedInUser');
+        window.location.href = 'index.html';
+    });
+}
 // --- LOGIQUE POUR LA PAGE DE RECHERCHE (need_help.html) ---
 const searchForm = document.getElementById('search-form');
 const searchResults = document.getElementById('search-results');
@@ -391,3 +380,4 @@ if (searchForm && searchResults) {
         }
     });
 }
+
