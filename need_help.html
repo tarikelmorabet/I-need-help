@@ -3,67 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I need help</title>
+    <title>J'ai besoin d'aide - I Need help</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container-help">
-        <h1>What do you need?</h1>
+        <h1>Trouvez de l'aide</h1>
+        <p>Dites-nous ce dont vous avez besoin et où.</p>
         
-        <label for="function-select">Choose a function:</label>
-        <select id="function-select">
-            <option value="">--Please choose an option--</option>
-            <option value="agent_immobilier">Agent immobilier</option>
-            <option value="architecte">Architecte</option>
-            <option value="assistant_maternel">Assistant maternel</option>
-            <option value="avocat">Avocat</option>
-            <option value="carreleur">Carreleur</option>
-            <option value="charpentier">Charpentier</option>
-            <option value="chauffagiste">Chauffagiste</option>
-            <option value="coiffeur">Coiffeur</option>
-            <option value="comptable">Comptable</option>
-            <option value="cuistot">Cuistot</option>
-            <option value="dentiste">Dentiste</option>
-            <option value="dermatologue">Dermatologue</option>
-            <option value="developpeur">Développeur</option>
-            <option value="docteur">Docteur</option>
-            <option value="electricien">Électricien</option>
-            <option value="estheticienne">Esthéticienne</option>
-            <option value="garagiste">Garagiste / Mécanicien</option>
-            <option value="graphiste">Graphiste</option>
-            <option value="infirmier">Infirmier / Infirmière</option>
-            <option value="jardinier">Jardinier</option>
-            <option value="macon">Maçon</option>
-            <option value="menuisier">Menuisier</option>
-            <option value="opticien">Opticien</option>
-            <option value="peintre">Peintre en bâtiment</option>
-            <option value="pharmacien">Pharmacien</option>
-            <option value="plombier">Plombier</option>
-            <option value="psychologue">Psychologue</option>
-            <option value="serrurier">Serrurier</option>
-            <option value="veterinaire">Vétérinaire</option>
-            <option value="webdesigner">Web Designer</option>
-        </select>
+        <form id="search-form">
+            <label for="search-function">Quelle sorte d'aide ?</label>
+            <select id="search-function">
+                <option value="">Toutes les catégories</option>
+            </select>
 
-        <label for="option-select">Choose an option:</label>
-        <select id="option-select" disabled>
-            <option value="">--Select a function first--</option>
-        </select>
+            <label for="search-city">Dans quelle ville ?</label>
+            <select id="search-city">
+                <option value="">Toutes les villes</option>
+            </select>
 
-        <p id="selection-result"></p>
-		<!-- ... (le reste de votre code inchangé) ... -->
+            <button type="submit">Rechercher</button>
+        </form>
 
-        <p id="selection-result"></p>
-
-        <!-- AJOUTEZ CE BOUTON ICI -->
+        <!-- Les résultats de la recherche s'afficheront ici -->
+        <div id="search-results">
+            <p>Veuillez sélectionner une catégorie et/ou une ville pour voir les offres.</p>
+        </div>
+        
         <button id="back-button">Retour à l'accueil</button>
-
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
     </div>
 
     <script src="script.js"></script>
