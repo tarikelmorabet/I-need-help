@@ -3,36 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de Bord - I Need help</title>
+    <title>Mon Profil Professionnel - I Need help</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container-help">
-        <h1>Tableau de Bord</h1>
+        <h1>Mon Profil Professionnel</h1>
         
         <p id="welcome-message">Chargement...</p>
 
-        <form id="offer-form">
-            <h2>Mon offre d'aide</h2>
+        <form id="profile-form">
+            <h2>Informations Personnelles</h2>
             
-            <!-- MENU DÉROULANT POUR LA FONCTION -->
+            <!-- NOUVEAU CHAMP POUR LA PHOTO DE PROFIL -->
+            <label for="profile-picture">Photo de profil (URL de l'image) :</label>
+            <input type="url" id="profile-picture" placeholder="https://exemple.com/ma-photo.jpg">
+            <p class="hint">Entrez l'adresse URL d'une image. Vous pouvez utiliser un service comme Imgur pour héberger votre photo.</p>
+            
+            <!-- NOUVEAUX CHAMPS SUPPLÉMENTAIRES -->
+            <label for="experience">Années d'expérience :</label>
+            <input type="number" id="experience" placeholder="Ex: 5" min="0">
+
+            <label for="diplomas">Diplômes / Certificats :</label>
+            <textarea id="diplomas" rows="3" placeholder="Listez vos diplômes ou certifications pertinentes..."></textarea>
+
+            <h2>Mon offre d'aide</h2>
+
             <label for="offer-function">Je propose mon aide en tant que :</label>
             <select id="offer-function" required>
                 <option value="">--Choisir une fonction--</option>
             </select>
 
-            <!-- MENU DÉROULANT POUR L'OPTION SPÉCIFIQUE -->
             <label for="offer-option">Option spécifique :</label>
             <select id="offer-option" disabled>
                 <option value="">--D'abord, choisissez une fonction--</option>
             </select>
 
-            <!-- CHAMP POUR LA DESCRIPTION -->
             <label for="offer-description">Description de mes services :</label>
             <textarea id="offer-description" rows="5" placeholder="Décrivez ce que vous pouvez faire, vos compétences, etc."></textarea>
 
-            <!-- CHAMP POUR LES HORAIRES -->
             <label for="offer-schedule">Mes horaires de disponibilité :</label>
             <select id="offer-schedule">
                 <option value="8h-18h">8h - 18h</option>
@@ -42,25 +52,22 @@
                 <option value="Sur rendez-vous">Sur rendez-vous</option>
             </select>
 
-            <!-- CHAMP POUR LE PRIX -->
             <label for="offer-price">Prix moyen par intervention standard (en Dh) :</label>
             <input type="number" id="offer-price" placeholder="Ex: 250" min="0" step="10">
 
-            <!-- MENU DÉROULANT POUR LA VILLE -->
             <label for="offer-city">Ma ville :</label>
             <select id="offer-city">
                 <option value="">--Choisir une ville--</option>
             </select>
 
-            <!-- MENU DÉROULANT POUR LE QUARTIER -->
             <label for="offer-district">Mon quartier :</label>
             <select id="offer-district" disabled>
                 <option value="">--D'abord, choisissez une ville--</option>
             </select>
 
-            <button type="submit">Sauvegarder mon offre</button>
+            <button type="submit">Mettre à jour mon profil</button>
         </form>
-        <p id="offer-message"></p>
+        <p id="profile-message"></p>
 
         <button id="logout-button">Se déconnecter</button>
     </div>
