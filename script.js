@@ -310,4 +310,84 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error("ERREUR : Les éléments du tableau de bord n'ont pas été trouvés. Vérifiez le HTML de dashboard.html");
     }
+
 });
+// --- LOGIQUE POUR LA PAGE DE RECHERCHE (need_help.html) ---
+const searchForm = document.getElementById('search-form');
+const searchResults = document.getElementById('search-results');
+
+if (searchForm && searchResults) {
+    const functionSelect = document.getElementById('search-function');
+    const citySelect = document.getElementById('search-city');
+
+    // Charger les fonctions et les villes dans les menus
+    Promise.all([
+        fetch('data.json').then(res => res.json()),
+        fetch('cities.json').then(res => res.json())
+    ]).then(([functionsData, citiesData]) => {
+        // Remplir le menu des fonctions
+        Object.keys(functionsData.options).forEach(func => {
+            const option = document.createElement('option');
+            option.value = func;
+            option.textContent = func.charAt(0).toUpperCase() + func.slice(1);
+            functionSelect.appendChild(option);
+        });
+        // Remplir le menu des villes
+        Object.keys(citiesData.cities).forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            citySelect.appendChild(option);
+        });
+    }).catch(error => console.error('Erreur de chargement des données:', error));
+
+    // Gérer la soumission du formulaire de recherche
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const selectedFunction = functionSelect.value;
+        const selectedCity = citySelect.value;
+
+        // Récupérer toutes les offres depuis le localStorage
+        const allOffers = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('offer_')) {
+                const offerData = JSON.parse(localStorage.getItem(key));
+                const userData = JSON.parse(localStorage.getItem(offerData.userEmail));
+                if (userData) {
+                    offerData.username = userData.username;
+                    allOffers.push(offerData);
+                }
+            }
+        }
+
+        // Filtrer les offres
+        const filteredOffers = allOffers.filter(offer => {
+            const functionMatch = !selectedFunction || offer.function === selectedFunction;
+            const cityMatch = !selectedCity || offer.city === selectedCity;
+            return functionMatch && cityMatch;
+        });
+
+        // Afficher les résultats
+        searchResults.innerHTML = ''; // Vider les anciens résultats
+        if (filteredOffers.length > 0) {
+            filteredOffers.forEach(offer => {
+                const offerCard = document.createElement('div');
+                offerCard.classList.add('offer-card');
+                offerCard.innerHTML = `
+                    <h3>${offer.function} - ${offer.option}</h3>
+                    <p><strong>Description :</strong> ${offer.description}</p>
+                    <p><strong>Disponibilités :</strong> ${offer.schedule}</p>
+                    <p><strong>Prix moyen :</strong> <span class="price">${offer.price} Dh</span></p>
+                    <p><strong>Localisation :</strong> ${offer.city}, ${offer.district}</p>
+                    <div class="contact-info">
+                        <strong>Proposé par :</strong> ${offer.username}
+                    </div>
+                `;
+                searchResults.appendChild(offerCard);
+            });
+        } else {
+            searchResults.innerHTML = '<p>Aucune offre trouvée pour ces critères.</p>';
+        }
+    });
+}
